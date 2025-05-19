@@ -70,7 +70,7 @@ const systemPropValidators: {
     [AppSystemProp.CLIENT_REAL_IP_HEADER]: stringValidator,
     [AppSystemProp.CLOUD_AUTH_ENABLED]: booleanValidator,
     [AppSystemProp.CONFIG_PATH]: stringValidator,
-    [AppSystemProp.DB_TYPE]: enumValidator(Object.values(DatabaseType)),
+    [AppSystemProp.DATABASE_TYPE]: enumValidator(Object.values(DatabaseType)),
     [AppSystemProp.DEV_PIECES]: stringValidator,
     [AppSystemProp.ENCRYPTION_KEY]: stringValidator,
     [AppSystemProp.EXECUTION_DATA_RETENTION_DAYS]: numberValidator,

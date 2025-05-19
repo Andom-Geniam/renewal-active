@@ -1,8 +1,19 @@
+import { OtpType } from '@activepieces/ee-shared';
+import {
+  ApEdition,
+  ApFlagId,
+  AuthenticationResponse,
+  ErrorCode,
+  isNil,
+  SignUpRequest,
+} from '@activepieces/shared';
 import { useMutation } from '@tanstack/react-query';
 import { t } from 'i18next';
 import { useMemo, useRef, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link, useSearchParams } from 'react-router-dom';
+
+import { passwordValidation } from '../lib/password-validation-utils';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -28,17 +39,6 @@ import { authenticationApi } from '@/lib/authentication-api';
 import { authenticationSession } from '@/lib/authentication-session';
 import { useRedirectAfterLogin } from '@/lib/navigation-utils';
 import { cn, formatUtils } from '@/lib/utils';
-import { OtpType } from '@activepieces/ee-shared';
-import {
-  ApEdition,
-  ApFlagId,
-  AuthenticationResponse,
-  ErrorCode,
-  isNil,
-  SignUpRequest,
-} from '@activepieces/shared';
-
-import { passwordValidation } from '../lib/password-validation-utils';
 
 type SignUpSchema = {
   email: string;
@@ -198,7 +198,7 @@ const SignUpForm = ({
                 required: t('First name is required'),
               }}
               render={({ field }) => (
-                <FormItem className="w-full grid space-y-2">
+                <FormItem className="grid w-full space-y-2">
                   <Label htmlFor="firstName">{t('First Name')}</Label>
                   <Input
                     {...field}
@@ -219,7 +219,7 @@ const SignUpForm = ({
                 required: t('Last name is required'),
               }}
               render={({ field }) => (
-                <FormItem className="w-full grid space-y-2">
+                <FormItem className="grid w-full space-y-2">
                   <Label htmlFor="lastName">{t('Last Name')}</Label>
                   <Input
                     {...field}
@@ -345,7 +345,7 @@ const SignUpForm = ({
             <Link
               to={termsOfServiceUrl || ''}
               target="_blank"
-              className="px-1 text-muted-foreground hover:text-primary text-sm transition-all duration-200"
+              className="px-1 text-sm transition-all duration-200 text-muted-foreground hover:text-primary"
             >
               {t('terms of service')}
             </Link>
@@ -355,7 +355,7 @@ const SignUpForm = ({
             <Link
               to={privacyPolicyUrl || ''}
               target="_blank"
-              className="pl-1 text-muted-foreground hover:text-primary text-sm transition-all duration-200"
+              className="pl-1 text-sm transition-all duration-200 text-muted-foreground hover:text-primary"
             >
               {t('privacy policy')}
             </Link>

@@ -60,7 +60,7 @@ import { WebhookSimulationEntity } from '../webhooks/webhook-simulation/webhook-
 import { WorkerMachineEntity } from '../workers/machine/machine-entity'
 import { createPostgresDataSource } from './postgres-connection'
 import { createSqlLiteDataSource } from './sqlite-connection'
-const databaseType = system.get(AppSystemProp.DB_TYPE)
+const databaseType = system.get(AppSystemProp.DATABASE_TYPE)
 
 function getEntities(): EntitySchema<unknown>[] {
     const edition = system.getEdition()
@@ -161,7 +161,7 @@ export const databaseConnection = () => {
 }
 
 export function getDatabaseType(): DatabaseType {
-    return system.getOrThrow<DatabaseType>(AppSystemProp.DB_TYPE)
+    return system.getOrThrow<DatabaseType>(AppSystemProp.DATABASE_TYPE)
 }
 
 
@@ -174,7 +174,7 @@ export function AddAPArrayContainsToQueryBuilder<T extends ObjectLiteral>(
         case DatabaseType.POSTGRES:
             queryBuilder.andWhere(`${columnName} @> :values`, { values })
             break
-        case DatabaseType.SQLITE3:{
+        case DatabaseType.SQLITE3: {
             for (const value of values) {
                 queryBuilder.andWhere(`${columnName} LIKE :value${values.indexOf(value)}`, { [`value${values.indexOf(value)}`]: `%${value}%` })
             }

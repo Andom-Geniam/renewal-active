@@ -1,5 +1,6 @@
 
 import { FastifyInstance } from 'fastify'
+import * as admin from 'firebase-admin'
 import { appPostBoot } from './app/app'
 import { initializeDatabase } from './app/database'
 import { initializeLock } from './app/helper/lock'
@@ -9,6 +10,16 @@ import { workerPostBoot } from './app/worker'
 
 const start = async (app: FastifyInstance): Promise<void> => {
     try {
+        const firebaseConfig = {
+            projectId: process.env.AP_FIREBASE_PROJECT_ID,
+            clientEmail: process.env.AP_FIREBASE_CLIENT_EMAIL,
+            privateKey: process.env.AP_FIREBASE_PRIVATE_KEY,
+        }
+
+        admin.initializeApp({
+            credential: admin.credential.cert(firebaseConfig),
+        })
+
         await app.listen({
             host: '0.0.0.0',
             port: 3000,

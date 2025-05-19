@@ -1,6 +1,17 @@
+import {
+  ApFlagId,
+  ThirdPartyAuthnProvidersToShowMap,
+} from '@activepieces/shared';
 import { t } from 'i18next';
 import React, { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+
+import { HorizontalSeparatorWithText } from '../../../components/ui/separator';
+import { flagsHooks } from '../../../hooks/flags-hooks';
+
+import { SignInForm } from './sign-in-form';
+import { SignUpForm } from './sign-up-form';
+import { ThirdPartyLogin } from './third-party-logins';
 
 import {
   Card,
@@ -11,38 +22,27 @@ import {
 } from '@/components/ui/card';
 import { authenticationSession } from '@/lib/authentication-session';
 import { useRedirectAfterLogin } from '@/lib/navigation-utils';
-import {
-  ApFlagId,
-  ThirdPartyAuthnProvidersToShowMap,
-} from '@activepieces/shared';
-
-import { HorizontalSeparatorWithText } from '../../../components/ui/separator';
-import { flagsHooks } from '../../../hooks/flags-hooks';
-
-import { SignInForm } from './sign-in-form';
-import { SignUpForm } from './sign-up-form';
-import { ThirdPartyLogin } from './third-party-logins';
 
 const BottomNote = ({ isSignup }: { isSignup: boolean }) => {
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.toString();
 
   return isSignup ? (
-    <div className="mb-4 text-center text-sm">
+    <div className="mb-4 text-sm text-center">
       {t('Already have an account?')}
       <Link
         to={`/sign-in?${searchQuery}`}
-        className="pl-1 text-muted-foreground hover:text-primary text-sm transition-all duration-200"
+        className="pl-1 text-sm transition-all duration-200 text-muted-foreground hover:text-primary"
       >
         {t('Sign in')}
       </Link>
     </div>
   ) : (
-    <div className="mb-4 text-center text-sm">
+    <div className="mb-4 text-sm text-center">
       {t("Don't have an account?")}
       <Link
         to={`/sign-up?${searchQuery}`}
-        className="pl-1 text-muted-foreground hover:text-primary text-sm transition-all duration-200"
+        className="pl-1 text-sm transition-all duration-200 text-muted-foreground hover:text-primary"
       >
         {t('Sign up')}
       </Link>

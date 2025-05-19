@@ -11,6 +11,7 @@ import {
     FastifyPluginAsyncTypebox,
     Type,
 } from '@fastify/type-provider-typebox'
+import * as admin from 'firebase-admin'
 import { StatusCodes } from 'http-status-codes'
 import { userService } from '../user-service'
 
@@ -47,6 +48,8 @@ export const platformUserController: FastifyPluginAsyncTypebox = async (app) => 
             id: req.params.id,
             platformId,
         })
+
+        await admin.auth().deleteUser(req.params.id)
 
         return res.status(StatusCodes.NO_CONTENT).send()
     })

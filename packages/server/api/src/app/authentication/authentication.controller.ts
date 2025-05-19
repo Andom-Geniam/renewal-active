@@ -11,22 +11,31 @@ import {
 } from '@activepieces/shared'
 import { RateLimitOptions } from '@fastify/rate-limit'
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox'
+import * as admin from 'firebase-admin'
 import { eventsHooks } from '../helper/application-events'
 import { system } from '../helper/system/system'
 import { platformUtils } from '../platform/platform.utils'
 import { userService } from '../user/user-service'
 import { authenticationService } from './authentication.service'
 
+
 export const authenticationController: FastifyPluginAsyncTypebox = async (
     app,
 ) => {
     app.post('/sign-up', SignUpRequestOptions, async (request) => {
-
         const platformId = await platformUtils.getPlatformIdForRequest(request)
         const signUpResponse = await authenticationService(request.log).signUp({
             ...request.body,
             provider: UserIdentityProvider.EMAIL,
             platformId: platformId ?? null,
+        })
+
+        await admin.auth().createUser({
+            email: request.body.email,
+            password: request.body.password,
+            displayName: request.body.firstName + ' ' + request.body.lastName,
+            emailVerified: false,
+            uid: signUpResponse.id,
         })
 
         eventsHooks.get(request.log).sendUserEvent({

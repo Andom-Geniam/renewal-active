@@ -242,7 +242,7 @@ if (usePostgres) {
 } else {
     containerEnvironmentVars.push(
         {
-            name: "AP_DB_TYPE",
+            name: "AP_DATABASE_TYPE",
             value: "SQLITE3"
         });
 }

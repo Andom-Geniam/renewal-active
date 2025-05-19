@@ -20,6 +20,7 @@ export const authenticationService = (log: FastifyBaseLogger) => ({
                 platformId: params.platformId,
                 provider: params.provider,
             })
+
             await authenticationUtils.assertDomainIsAllowed({
                 email: params.email,
                 platformId: params.platformId,

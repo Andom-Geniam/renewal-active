@@ -1,21 +1,3 @@
-import { typeboxResolver } from '@hookform/resolvers/typebox';
-import { Static, Type } from '@sinclair/typebox';
-import { useMutation } from '@tanstack/react-query';
-import { t } from 'i18next';
-import { useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { Link, Navigate } from 'react-router-dom';
-
-import { Button } from '@/components/ui/button';
-import { Form, FormField, FormItem, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { flagsHooks } from '@/hooks/flags-hooks';
-import { HttpError, api } from '@/lib/api';
-import { authenticationApi } from '@/lib/authentication-api';
-import { authenticationSession } from '@/lib/authentication-session';
-import { useRedirectAfterLogin } from '@/lib/navigation-utils';
-import { formatUtils } from '@/lib/utils';
 import { OtpType } from '@activepieces/ee-shared';
 import {
   ApEdition,
@@ -25,8 +7,28 @@ import {
   isNil,
   SignInRequest,
 } from '@activepieces/shared';
+import { typeboxResolver } from '@hookform/resolvers/typebox';
+import { Static, Type } from '@sinclair/typebox';
+import { useMutation } from '@tanstack/react-query';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { t } from 'i18next';
+import { useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { Link, Navigate } from 'react-router-dom';
 
 import { CheckEmailNote } from './check-email-note';
+
+import { Button } from '@/components/ui/button';
+import { Form, FormField, FormItem, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { auth } from '@/firebase/firebaseConfig';
+import { flagsHooks } from '@/hooks/flags-hooks';
+import { HttpError, api } from '@/lib/api';
+import { authenticationApi } from '@/lib/authentication-api';
+import { authenticationSession } from '@/lib/authentication-session';
+import { useRedirectAfterLogin } from '@/lib/navigation-utils';
+import { formatUtils } from '@/lib/utils';
 
 const SignInSchema = Type.Object({
   email: Type.String({
@@ -57,12 +59,19 @@ const SignInForm: React.FC = () => {
   const { data: userCreated } = flagsHooks.useFlag(ApFlagId.USER_CREATED);
   const redirectAfterLogin = useRedirectAfterLogin();
 
+  const handleLogin = async (request: SignInRequest) => {
+    await signInWithEmailAndPassword(auth, request.email, request.password);
+
+    return authenticationApi.signIn(request);
+  };
+
   const { mutate, isPending } = useMutation<
     AuthenticationResponse,
     HttpError,
     SignInRequest
   >({
-    mutationFn: authenticationApi.signIn,
+    // mutationFn: authenticationApi.signIn,
+    mutationFn: handleLogin,
     onSuccess: (data) => {
       authenticationSession.saveResponse(data);
       redirectAfterLogin();
@@ -165,7 +174,7 @@ const SignInForm: React.FC = () => {
                   {edition !== ApEdition.COMMUNITY && (
                     <Link
                       to="/forget-password"
-                      className="text-muted-foreground text-sm hover:text-primary transition-all duration-200"
+                      className="text-sm transition-all duration-200 text-muted-foreground hover:text-primary"
                     >
                       {t('Forgot your password?')}
                     </Link>

@@ -137,7 +137,7 @@ export default class Paginator<Entity extends ObjectLiteral> {
         where: WhereExpressionBuilder,
         cursors: CursorParam,
     ): void {
-        const dbType = system.get(AppSystemProp.DB_TYPE)
+        const dbType = system.get(AppSystemProp.DATABASE_TYPE)
         const operator = this.getOperator()
         let queryString: string
 

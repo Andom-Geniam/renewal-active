@@ -1,4 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
+import { signOut } from 'firebase/auth';
 import { t } from 'i18next';
 import { LogOut } from 'lucide-react';
 
@@ -12,6 +13,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { auth } from '@/firebase/firebaseConfig';
 import { userHooks } from '@/hooks/user-hooks';
 import { authenticationSession } from '@/lib/authentication-session';
 
@@ -20,6 +22,14 @@ export function SidebarUser() {
   const { data: user } = userHooks.useCurrentUser();
   const queryClient = useQueryClient();
   const { reset } = useTelemetry();
+
+  const handleLogout = async () => {
+    await signOut(auth);
+    userHooks.invalidateCurrentUser(queryClient);
+    authenticationSession.logOut();
+    reset();
+  };
+
   if (!user || embedState.isEmbedded) {
     return null;
   }
@@ -27,14 +37,14 @@ export function SidebarUser() {
     <SidebarMenu>
       <SidebarMenuItem className="flex items-center justify-between w-full">
         <div className="flex items-center">
-          <Avatar className="h-8 w-8 rounded-lg">
-            <AvatarFallback className="rounded-lg bg-gray-200">
+          <Avatar className="w-8 h-8 rounded-lg">
+            <AvatarFallback className="bg-gray-200 rounded-lg">
               {user.firstName.charAt(0)}
             </AvatarFallback>
           </Avatar>
-          <div className="grid flex-1 text-left text-sm leading-tight ml-2">
-            <span className="truncate font-semibold">{user.firstName}</span>
-            <span className="truncate text-xs">{user.email}</span>
+          <div className="grid flex-1 ml-2 text-sm leading-tight text-left">
+            <span className="font-semibold truncate">{user.firstName}</span>
+            <span className="text-xs truncate">{user.email}</span>
           </div>
         </div>
         <Tooltip>
@@ -43,11 +53,7 @@ export function SidebarUser() {
               className="flex items-center ml-2"
               variant="ghost"
               size="icon"
-              onClick={() => {
-                userHooks.invalidateCurrentUser(queryClient);
-                authenticationSession.logOut();
-                reset();
-              }}
+              onClick={handleLogout}
             >
               <LogOut className="size-4" />
             </Button>

@@ -3,7 +3,7 @@ import { ApEdition } from '@activepieces/shared'
 import { EntitySchemaColumnOptions } from 'typeorm'
 import { DatabaseType, system } from '../helper/system/system'
 
-const databaseType = system.get(AppSystemProp.DB_TYPE)
+const databaseType = system.get(AppSystemProp.DATABASE_TYPE)
 
 export const JSON_COLUMN_TYPE =
   databaseType === DatabaseType.SQLITE3 ? 'simple-json' : 'json'
